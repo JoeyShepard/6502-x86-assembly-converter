@@ -1,0 +1,146 @@
+Optimization
+============
+symbols: {'S1': ['%A3', '8', '<<', '%A1', '+']}
+requires: [['%A2', '1', '+', '%A4', '=']]
+replacement: [['MOV16', 'ABS', '%A2', ',', 'IMMED', '%S1']]
+PATTERN 1 [169] ['1', 'LDA', 'IMMED']
+PATTERN 2 [141, 133] ['2', 'STA', 'ABS', 'ZP']
+PATTERN 3 [169] ['3', 'LDA', 'IMMED']
+PATTERN 4 [141, 133] ['4', 'STA', 'ABS', 'ZP']
+POST [104, 138, 152, 161, 165, 169, 173, 177, 181, 185, 189] ['LOAD', 'A']
+
+Optimization
+============
+symbols: {'S1': ['%A3', '8', '<<', '%A1', '+']}
+requires: [['%A2', '1', '+', '%A4', '=']]
+replacement: [['MOV16', 'ABS', '%A2', ',', 'IMMED', '%S1']]
+PATTERN 1 [162] ['1', 'LDX', 'IMMED']
+PATTERN 2 [142, 134] ['2', 'STX', 'ABS', 'ZP']
+PATTERN 3 [162] ['3', 'LDX', 'IMMED']
+PATTERN 4 [142, 134] ['4', 'STX', 'ABS', 'ZP']
+POST [162, 166, 170, 174, 182, 186, 190] ['LOAD', 'X']
+
+Optimization
+============
+symbols: {'S1': ['%A3', '8', '<<', '%A1', '+']}
+requires: [['%A2', '1', '+', '%A4', '=']]
+replacement: [['MOV16', 'ABS', '%A2', ',', 'IMMED', '%S1']]
+PATTERN 1 [160] ['1', 'LDY', 'IMMED']
+PATTERN 2 [140, 132] ['2', 'STY', 'ABS', 'ZP']
+PATTERN 3 [160] ['3', 'LDY', 'IMMED']
+PATTERN 4 [140, 132] ['4', 'STY', 'ABS', 'ZP']
+POST [160, 164, 168, 172, 180, 188] ['LOAD', 'Y']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['MOV8', 'ABS', '%A2', ',', 'IMMED', '%A1']]
+PATTERN 1 [169] ['1', 'LDA', 'IMMED']
+PATTERN 2 [141, 133] ['2', 'STA', 'ABS', 'ZP']
+POST [104, 138, 152, 161, 165, 169, 173, 177, 181, 185, 189] ['LOAD', 'A']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['MOV8', 'ABS', '%A2', ',', 'IMMED', '%A1']]
+PATTERN 1 [162] ['1', 'LDX', 'IMMED']
+PATTERN 2 [142, 134] ['2', 'STX', 'ABS', 'ZP']
+POST [162, 166, 170, 174, 182, 186, 190] ['LOAD', 'X']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['MOV8', 'ABS', '%A2', ',', 'IMMED', '%A1']]
+PATTERN 1 [160] ['1', 'LDY', 'IMMED']
+PATTERN 2 [140, 132] ['2', 'STY', 'ABS', 'ZP']
+POST [160, 164, 168, 172, 180, 188] ['LOAD', 'Y']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['ADD8', '%M1', '%A1']]
+PATTERN [24] ['CLC']
+PATTERN 1 [97, 101, 105, 109, 113, 117, 121, 125] ['1', 'ADC', 'ANY']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['ADD8', '%M1', '%A1']]
+PATTERN [24] ['CLC']
+PATTERN [104, 138, 152, 161, 165, 169, 173, 177, 181, 185, 189] ['LOAD', 'A']
+PATTERN 1 [97, 101, 105, 109, 113, 117, 121, 125] ['1', 'ADC', 'ANY']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['SUB8', '%M1', '%A1']]
+PATTERN [56] ['SEC']
+PATTERN 1 [225, 229, 233, 237, 241, 245, 249, 253] ['1', 'SBC', 'ANY']
+
+Optimization
+============
+symbols: {}
+requires: []
+replacement: [['SUB8', '%M1', '%A1']]
+PATTERN [56] ['SEC']
+PATTERN [104, 138, 152, 161, 165, 169, 173, 177, 181, 185, 189] ['LOAD', 'A']
+PATTERN 1 [225, 229, 233, 237, 241, 245, 249, 253] ['1', 'SBC', 'ANY']
+
+Optimization
+============
+symbols: {'P1_DS': ['%A2', '%A4', '='], 'P1_SD': ['%A3', '%A4', '='], 'P2_DS': ['%A5', '%A7', '='], 'P2_SD': ['%A6', '%A7', '='], 'P_DSDS': ['%P1_DS', '%P2_DS', 'AND'], 'P_DSSD': ['%P1_DS', '%P2_SD', 'AND'], 'P_SDDS': ['%P1_SD', '%P2_DS', 'AND'], 'P_SDSD': ['%P1_SD', '%P2_SD', 'AND'], 'SRC_LO': ['%A3', '%A2', '%P1_DS', 'IFF'], 'SRC_HI': ['%A6', '%A5', '%P2_DS', 'IFF']}
+requires: [['%A4', '1', '+', '%A7', '='], ['%P_DSDS', '%P_DSSD', '%P_SDDS', '%P_SDSD', 'OR', 'OR', 'OR'], ['%SRC_LO', '1', '+', '%SRC_HI', '=']]
+replacement: [['ADD16', 'ABS', '%A4', ',', 'ABS', '%SRC_LO']]
+PATTERN 1 [24] ['1', 'CLC']
+PATTERN 2 [173, 165] ['2', 'LDA', 'ABS', 'ZP']
+PATTERN 3 [109, 101] ['3', 'ADC', 'ABS', 'ZP']
+PATTERN 4 [141, 133] ['4', 'STA', 'ABS', 'ZP']
+PATTERN 5 [173, 165] ['5', 'LDA', 'ABS', 'ZP']
+PATTERN 6 [109, 101] ['6', 'ADC', 'ABS', 'ZP']
+PATTERN 7 [141, 133] ['7', 'STA', 'ABS', 'ZP']
+
+Optimization
+============
+symbols: {'P1_DS': ['%A2', '%A4', '='], 'P1_SD': ['%A3', '%A4', '='], 'P2_DS': ['%A5', '%A7', '='], 'P2_SD': ['%A6', '%A7', '='], 'P_DSDS': ['%P1_DS', '%P2_DS', 'AND'], 'P_DSSD': ['%P1_DS', '%P2_SD', 'AND'], 'P_SDDS': ['%P1_SD', '%P2_DS', 'AND'], 'P_SDSD': ['%P1_SD', '%P2_SD', 'AND'], 'SRC_LO': ['%A3', '%A2', '%P1_DS', 'IFF'], 'SRC_HI': ['%A6', '%A5', '%P2_DS', 'IFF']}
+requires: [['%A4', '1', '+', '%A7', '='], ['%P_DSDS', '%P_DSSD', '%P_SDDS', '%P_SDSD', 'OR', 'OR', 'OR'], ['%SRC_LO', '1', '+', '%SRC_HI', '=']]
+replacement: [['ADD16', 'ABS', '%A4', ',', 'ABS', '%SRC_LO']]
+PATTERN 2 [173, 165] ['2', 'LDA', 'ABS', 'ZP']
+PATTERN 1 [24] ['1', 'CLC']
+PATTERN 3 [109, 101] ['3', 'ADC', 'ABS', 'ZP']
+PATTERN 4 [141, 133] ['4', 'STA', 'ABS', 'ZP']
+PATTERN 5 [173, 165] ['5', 'LDA', 'ABS', 'ZP']
+PATTERN 6 [109, 101] ['6', 'ADC', 'ABS', 'ZP']
+PATTERN 7 [141, 133] ['7', 'STA', 'ABS', 'ZP']
+
+Optimization
+============
+symbols: {'M2_I': ['%M2', 'IMMED', '='], 'M3_I': ['%M3', 'IMMED', '='], 'M5_I': ['%M5', 'IMMED', '='], 'M6_I': ['%M6', 'IMMED', '='], 'IMMED_VAL': ['%A5', '%A6', '%M5_I', 'IFF', '8', '<<', '%A2', '%A3', '%M2_I', 'IFF', '+'], 'SRC1': ['%A3', '%A2', '%M2_I', 'IFF'], 'SRC2': ['%A6', '%A5', '%M6_I', 'IFF']}
+requires: [['%M2_I', '%M3_I', '+', '1', '='], ['%M5_I', '%M6_I', '+', '1', '='], ['%SRC1', '1', '+', '%SRC2', '='], ['%SRC1', '%A4', '='], ['%SRC2', '%A7', '=']]
+replacement: [['ADD16', 'ABS', '%SRC1', ',', 'IMMED', '%IMMED_VAL']]
+PATTERN 1 [24] ['1', 'CLC']
+PATTERN 2 [173, 165, 169] ['2', 'LDA', 'ABS', 'ZP', 'IMMED']
+PATTERN 3 [109, 101, 105] ['3', 'ADC', 'ABS', 'ZP', 'IMMED']
+PATTERN 4 [141, 133] ['4', 'STA', 'ABS', 'ZP']
+PATTERN 5 [173, 165, 169] ['5', 'LDA', 'ABS', 'ZP', 'IMMED']
+PATTERN 6 [109, 101, 105] ['6', 'ADC', 'ABS', 'ZP', 'IMMED']
+PATTERN 7 [141, 133] ['7', 'STA', 'ABS', 'ZP']
+
+Optimization
+============
+symbols: {'M2_I': ['%M2', 'IMMED', '='], 'M3_I': ['%M3', 'IMMED', '='], 'M5_I': ['%M5', 'IMMED', '='], 'M6_I': ['%M6', 'IMMED', '='], 'IMMED_VAL': ['%A5', '%A6', '%M5_I', 'IFF', '8', '<<', '%A2', '%A3', '%M2_I', 'IFF', '+'], 'SRC1': ['%A3', '%A2', '%M2_I', 'IFF'], 'SRC2': ['%A6', '%A5', '%M6_I', 'IFF']}
+requires: [['%M2_I', '%M3_I', '+', '1', '='], ['%M5_I', '%M6_I', '+', '1', '='], ['%SRC1', '1', '+', '%SRC2', '='], ['%SRC1', '%A4', '='], ['%SRC2', '%A7', '=']]
+replacement: [['ADD16', 'ABS', '%SRC1', ',', 'IMMED', '%IMMED_VAL']]
+PATTERN 2 [173, 165, 169] ['2', 'LDA', 'ABS', 'ZP', 'IMMED']
+PATTERN 1 [24] ['1', 'CLC']
+PATTERN 3 [109, 101, 105] ['3', 'ADC', 'ABS', 'ZP', 'IMMED']
+PATTERN 4 [141, 133] ['4', 'STA', 'ABS', 'ZP']
+PATTERN 5 [173, 165, 169] ['5', 'LDA', 'ABS', 'ZP', 'IMMED']
+PATTERN 6 [109, 101, 105] ['6', 'ADC', 'ABS', 'ZP', 'IMMED']
+PATTERN 7 [141, 133] ['7', 'STA', 'ABS', 'ZP']
+

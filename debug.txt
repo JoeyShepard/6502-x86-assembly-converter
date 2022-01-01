@@ -1,0 +1,2196 @@
+
+ADC ABS:
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte[ mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+adc al , byte[ mem6502 + %arg ]
+.done:
+
+ADC ABSX:
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte [ rbx + mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+adc al , byte [ rbx + mem6502 + %arg ]
+.done:
+
+ADC ABSY:
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte [ rcx + mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+adc al , byte [ rcx + mem6502 + %arg ]
+.done:
+
+ADC IMMED:
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , %arg
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+adc al , %arg
+.done:
+
+ADC ZP:
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte[ mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+adc al , byte[ mem6502 + %arg ]
+.done:
+
+ADC IX:
+pushfq
+test r12d , r12d
+je .no_BCD
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+mov dl , byte [ mem6502 + rdx ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+adc al , byte [ mem6502 + rdx ]
+.done:
+
+ADC IY:
+pushfq
+test r12d , r12d
+je .no_BCD
+movzx edx , word [ mem6502 + %arg ]
+mov dl , byte [ mem6502 + rcx + rdx ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+movzx edx , word [ mem6502 + %arg ]
+adc al , byte [ mem6502 + rcx + rdx ]
+.done:
+
+ADC ZPX:
+pushfq
+test r12d , r12d
+je .no_BCD
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+mov dl , byte [ mem6502 + rdx ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+adc al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp eax , 100
+jb .no_correction
+sub eax , 100
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+jmp .done
+.no_BCD:
+popfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+adc al , byte [ mem6502 + rdx ]
+.done:
+
+AND ABS:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+and al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND ABSX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+and al , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND ABSY:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+and al , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND IMMED:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+and al , %arg
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND ZP:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+and al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND ZPX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+and al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND IX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+and al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+AND IY:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+movzx edx , word [ mem6502 + %arg ]
+and al , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR ABS:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+xor al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR ABSX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+xor al , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR ABSY:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+xor al , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR IMMED:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+xor al , %arg
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR ZP:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+xor al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR ZPX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+xor al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR IX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+xor al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+EOR IY:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+movzx edx , word [ mem6502 + %arg ]
+xor al , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA ABS:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+or al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA ABSX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+or al , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA ABSY:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+or al , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA IMMED:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+or al , %arg
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA ZP:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+or al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA ZPX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+or al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA IX:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+or al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ORA IY:
+pushfq
+and dword [rsp], MASK_CF_FLAG|MASK_OF_FLAG
+movzx edx , word [ mem6502 + %arg ]
+or al , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+or [rsp], edx
+popfq
+
+ASL A:
+pushfq
+shl al , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ASL ZP:
+pushfq
+shl byte[ mem6502 + %arg ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ASL ABS:
+pushfq
+shl byte[ mem6502 + %arg ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ASL ABSX:
+pushfq
+shl byte [ rbx + mem6502 + %arg ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ASL ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+shl byte [ mem6502 + rdx ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+LSR A:
+pushfq
+shr al , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+LSR ZP:
+pushfq
+shr byte[ mem6502 + %arg ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+LSR ABS:
+pushfq
+shr byte[ mem6502 + %arg ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+LSR ABSX:
+pushfq
+shr byte [ rbx + mem6502 + %arg ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+LSR ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+shr byte [ mem6502 + rdx ] , 1
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+BCC REL:
+jnc %rel
+
+BCS REL:
+jc %rel
+
+BNE REL:
+jne %rel
+
+BEQ REL:
+je %rel
+
+BPL REL:
+jns %rel
+
+BMI REL:
+js %rel
+
+BVC REL:
+jno %rel
+
+BVS REL:
+jo %rel
+
+BIT ABS:
+pushfq
+and dword [rsp] , ~(MASK_SF_FLAG|MASK_ZF_FLAG|MASK_OF_FLAG)
+movzx edx , byte[ mem6502 + %arg ]
+test al , dl
+jnz .no_zero
+or dword [rsp] , MASK_ZF_FLAG
+.no_zero:
+test dl , 0x80
+jns .no_negative
+or dword [rsp] , MASK_SF_FLAG
+.no_negative:
+test dl , 0x40
+je .no_bit6
+or dword [rsp] , MASK_OF_FLAG
+.no_bit6:
+popfq
+
+BIT ZP:
+pushfq
+and dword [rsp] , ~(MASK_SF_FLAG|MASK_ZF_FLAG|MASK_OF_FLAG)
+movzx edx , byte[ mem6502 + %arg ]
+test al , dl
+jnz .no_zero
+or dword [rsp] , MASK_ZF_FLAG
+.no_zero:
+test dl , 0x80
+jns .no_negative
+or dword [rsp] , MASK_SF_FLAG
+.no_negative:
+test dl , 0x40
+je .no_bit6
+or dword [rsp] , MASK_OF_FLAG
+.no_bit6:
+popfq
+
+BRK IMP:
+call halt_breakpoint
+jmp done
+
+CLC IMP:
+CLC
+
+CLD IMP:
+mov r12d , 0
+
+CLI IMP:
+;Ignored!
+
+NOP IMP:
+;Ignored!
+
+SEI IMP:
+;Ignored!
+
+RTI IMP:
+;Ignored!
+
+CLV IMP:
+pushfq
+and dword [rsp], ~MASK_OF_FLAG
+popfq
+
+CMP ABS:
+pushfq
+cmp al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP ABSX:
+pushfq
+cmp al , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP ABSY:
+pushfq
+cmp al , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP IMMED:
+pushfq
+cmp al , %arg
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP ZP:
+pushfq
+cmp al , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP IX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+cmp al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP IY:
+pushfq
+movzx edx , word [ mem6502 + %arg ]
+cmp al , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CMP ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+cmp al , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX ABS:
+pushfq
+cmp bl , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX ABSX:
+pushfq
+cmp bl , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX ABSY:
+pushfq
+cmp bl , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX IMMED:
+pushfq
+cmp bl , %arg
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX ZP:
+pushfq
+cmp bl , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX IX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+cmp bl , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX IY:
+pushfq
+movzx edx , word [ mem6502 + %arg ]
+cmp bl , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPX ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+cmp bl , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY ABS:
+pushfq
+cmp cl , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY ABSX:
+pushfq
+cmp cl , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY ABSY:
+pushfq
+cmp cl , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY IMMED:
+pushfq
+cmp cl , %arg
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY ZP:
+pushfq
+cmp cl , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY IX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+cmp cl , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY IY:
+pushfq
+movzx edx , word [ mem6502 + %arg ]
+cmp cl , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+CPY ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+cmp cl , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+cmc
+
+DEC ABS:
+pushfq
+dec byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEC ABSX:
+pushfq
+dec byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEC ZP:
+pushfq
+dec byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEC IMP:
+pushfq
+dec NA
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEC ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+dec byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEX ABS:
+pushfq
+dec byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEX ABSX:
+pushfq
+dec byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEX ZP:
+pushfq
+dec byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEX IMP:
+pushfq
+dec bl
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEX ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+dec byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEY ABS:
+pushfq
+dec byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEY ABSX:
+pushfq
+dec byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEY ZP:
+pushfq
+dec byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEY IMP:
+pushfq
+dec cl
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+DEY ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+dec byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INC ABS:
+pushfq
+inc byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INC ABSX:
+pushfq
+inc byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INC ZP:
+pushfq
+inc byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INC IMP:
+pushfq
+inc NA
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INC ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+inc byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INX ABS:
+pushfq
+inc byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INX ABSX:
+pushfq
+inc byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INX ZP:
+pushfq
+inc byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INX IMP:
+pushfq
+inc bl
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INX ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+inc byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INY ABS:
+pushfq
+inc byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INY ABSX:
+pushfq
+inc byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INY ZP:
+pushfq
+inc byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INY IMP:
+pushfq
+inc cl
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+INY ZPX:
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+inc byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , ~MASK_OF_FLAG
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+JMP JMP:
+jmp %jmp
+
+JMP I:
+movzx edx , word [ mem6502 + %arg ]
+mov edx , [ jump_table + rdx * 4 ]
+jmp rdx
+
+JSR ABS:
+mov byte [ mem6502 + 0x100 + rdi ], %jsr1
+lea edi , [ rdi - 1 ]
+movzx edi , dil
+mov byte [ mem6502 + 0x100 + rdi ], %jsr2
+lea edi , [ rdi - 1 ]
+movzx edi , dil
+jmp %jmp
+
+LDA IMMED:
+mov eax , %arg
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA ABS:
+movzx eax , byte[ mem6502 + %arg ]
+mov edx, %arg
+%if %arg 0xFFF0
+call peripheral_read
+%endif
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA ABSX:
+movzx eax , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA ABSY:
+movzx eax , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA ZP:
+movzx eax , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA IX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+movzx eax , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA IY:
+movzx edx , word [ mem6502 + %arg ]
+movzx eax , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDA ZPX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx eax , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+LDX IMMED:
+mov ebx , %arg
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX ABS:
+movzx ebx , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX ABSX:
+movzx ebx , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX ABSY:
+movzx ebx , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX ZP:
+movzx ebx , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX IX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+movzx ebx , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX IY:
+movzx edx , word [ mem6502 + %arg ]
+movzx ebx , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDX ZPX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx ebx , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+LDY IMMED:
+mov ecx , %arg
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY ABS:
+movzx ecx , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY ABSX:
+movzx ecx , byte [ rbx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY ABSY:
+movzx ecx , byte [ rcx + mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY ZP:
+movzx ecx , byte[ mem6502 + %arg ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY IX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+movzx ecx , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY IY:
+movzx edx , word [ mem6502 + %arg ]
+movzx ecx , byte [ mem6502 + rcx + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+LDY ZPX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx ecx , byte [ mem6502 + rdx ]
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+PHA IMP:
+mov [ mem6502 + 0x100 + rdi ], al
+pushfq
+dec dil
+popfq
+
+PHP IMP:
+mov edx , r12d
+lea edx , [ rdx + I_FLAG ]
+jnc .no_carry
+lea edx , [ rdx + C_FLAG ]
+.no_carry:
+jnz .no_zero
+lea edx , [ rdx + Z_FLAG ]
+.no_zero:
+jno .no_overflow
+lea edx , [ rdx + V_FLAG ]
+.no_overflow:
+jns .no_negative
+lea edx , [ rdx + N_FLAG ]
+.no_negative:
+mov [ mem6502 + 0x100 + rdi ], dl
+lea edi , [ rdi - 1 ]
+movzx edi , dil
+
+PLA IMP:
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+inc dil
+mov al , [ mem6502 + 0x100 + rdi ]
+test al , al
+pushfq
+or [rsp], rdx
+popfq
+
+PLP IMP:
+pushfq
+pop rdx
+and edx , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+inc dil
+test byte [ mem6502 + 0x100 + rdi ] , C_FLAG
+je .no_carry
+lea edx , [ rdx + MASK_CF_FLAG ]
+.no_carry:
+test byte [ mem6502 + 0x100 + rdi ] , Z_FLAG
+je .no_zero
+lea edx , [ rdx + MASK_ZF_FLAG ]
+.no_zero:
+test byte [ mem6502 + 0x100 + rdi ] , V_FLAG
+je .no_overflow
+lea edx , [ rdx + MASK_OF_FLAG ]
+.no_overflow:
+test byte [ mem6502 + 0x100 + rdi ] , N_FLAG
+je .no_negative
+lea edx , [ rdx + MASK_SF_FLAG ]
+.no_negative:
+push rdx
+popfq
+
+ROL A:
+;Save V flag
+pushfq
+rcl al , 1
+;Save C generated by shift
+pushfq
+test al , al
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROL ZP:
+;Save V flag
+pushfq
+rcl byte[ mem6502 + %arg ] , 1
+;Save C generated by shift
+pushfq
+cmp byte[ mem6502 + %arg ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROL ABS:
+;Save V flag
+pushfq
+rcl byte[ mem6502 + %arg ] , 1
+;Save C generated by shift
+pushfq
+cmp byte[ mem6502 + %arg ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROL ABSX:
+;Save V flag
+pushfq
+rcl byte [ rbx + mem6502 + %arg ] , 1
+;Save C generated by shift
+pushfq
+cmp byte [ rbx + mem6502 + %arg ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROL ZPX:
+;Save V flag
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+rcl byte [ mem6502 + rdx ] , 1
+;Save C generated by shift
+pushfq
+cmp byte [ mem6502 + rdx ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROR A:
+;Save V flag
+pushfq
+rcr al , 1
+;Save C generated by shift
+pushfq
+test al , al
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROR ZP:
+;Save V flag
+pushfq
+rcr byte[ mem6502 + %arg ] , 1
+;Save C generated by shift
+pushfq
+cmp byte[ mem6502 + %arg ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROR ABS:
+;Save V flag
+pushfq
+rcr byte[ mem6502 + %arg ] , 1
+;Save C generated by shift
+pushfq
+cmp byte[ mem6502 + %arg ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROR ABSX:
+;Save V flag
+pushfq
+rcr byte [ rbx + mem6502 + %arg ] , 1
+;Save C generated by shift
+pushfq
+cmp byte [ rbx + mem6502 + %arg ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+ROR ZPX:
+;Save V flag
+pushfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+rcr byte [ mem6502 + rdx ] , 1
+;Save C generated by shift
+pushfq
+cmp byte [ mem6502 + rdx ] , 0
+;Save N and Z generated by shift
+pushfq
+pop rdx
+and edx , MASK_SF_FLAG|MASK_ZF_FLAG
+and dword [rsp], MASK_CF_FLAG
+or rdx , [rsp]
+add rsp, 8
+and dword [rsp], MASK_OF_FLAG
+or [rsp], edx
+popfq
+
+RTS IMP:
+lea edi , [ rdi + 1 ]
+movzx edi , dil
+movzx edx , byte [ mem6502 + 0x100 + rdi ]
+lea edi , [ rdi + 1 ]
+movzx edi , dil
+mov dh , [ mem6502 + 0x100 + rdi ]
+lea edx , [ jump_table + rdx * 4 + 4 ]
+mov edx , [ rdx ]
+jmp rdx
+
+SBC ABS:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte[ mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+sbb al , byte[ mem6502 + %arg ]
+cmc
+.done:
+
+SBC ABSX:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte [ rbx + mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+sbb al , byte [ rbx + mem6502 + %arg ]
+cmc
+.done:
+
+SBC ABSY:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte [ rcx + mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+sbb al , byte [ rcx + mem6502 + %arg ]
+cmc
+.done:
+
+SBC IMMED:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , %arg
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+sbb al , %arg
+cmc
+.done:
+
+SBC ZP:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+mov dl , byte[ mem6502 + %arg ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+sbb al , byte[ mem6502 + %arg ]
+cmc
+.done:
+
+SBC IX:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+mov %temp , byte [ mem6502 + rdx ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+sbb al , byte [ mem6502 + rdx ]
+cmc
+.done:
+
+SBC IY:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+movzx edx , word [ mem6502 + %arg ]
+mov dl , byte [ mem6502 + rcx + rdx ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+movzx edx , word [ mem6502 + %arg ]
+sbb al , byte [ mem6502 + rcx + rdx ]
+cmc
+.done:
+
+SBC ZPX:
+cmc
+pushfq
+test r12d , r12d
+je .no_BCD
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+mov dl , byte [ mem6502 + rdx ]
+movzx edx , dl
+mov al , [ BCD_to_dec + rax ]
+popfq
+sbb al , [ BCD_to_dec + rdx ]
+pushfq
+and dword [rsp] , ~(MASK_CF_FLAG|MASK_OF_FLAG|MASK_SF_FLAG|MASK_ZF_FLAG)
+cmp al , (256-99-1)
+jb .no_correction
+sub al , (255-99)
+or dword [rsp] , MASK_CF_FLAG
+.no_correction:
+test al , al
+jnz .not_zero
+or dword [rsp] , MASK_ZF_FLAG
+.not_zero:
+mov al , [ dec_to_BCD + rax ]
+popfq
+cmc
+jmp .done
+.no_BCD:
+popfq
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+sbb al , byte [ mem6502 + rdx ]
+cmc
+.done:
+
+SEC IMP:
+STC
+
+SED IMP:
+mov r12d , D_FLAG
+
+STA ABS:
+mov byte[ mem6502 + %arg ] , al
+mov edx , %arg
+%if %arg 0xFFE7 0xFFE8
+call peripheral_write
+%endif
+%if %arg 0xFFF1
+call peripheral_write
+%endif
+
+STA ABSX:
+mov byte [ rbx + mem6502 + %arg ] , al
+
+STA ABSY:
+mov byte [ rcx + mem6502 + %arg ] , al
+
+STA ZP:
+mov byte[ mem6502 + %arg ] , al
+
+STA IX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+mov byte [ mem6502 + rdx ] , al
+
+STA IY:
+movzx edx , word [ mem6502 + %arg ]
+mov byte [ mem6502 + rcx + rdx ] , al
+
+STA ZPX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+mov byte [ mem6502 + rdx ] , al
+
+STX ABS:
+mov byte[ mem6502 + %arg ] , bl
+
+STX ABSX:
+mov byte [ rbx + mem6502 + %arg ] , bl
+
+STX ABSY:
+mov byte [ rcx + mem6502 + %arg ] , bl
+
+STX ZP:
+mov byte[ mem6502 + %arg ] , bl
+
+STX IX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+mov byte [ mem6502 + rdx ] , bl
+
+STX IY:
+movzx edx , word [ mem6502 + %arg ]
+mov byte [ mem6502 + rcx + rdx ] , bl
+
+STX ZPX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+mov byte [ mem6502 + rdx ] , bl
+
+STY ABS:
+mov byte[ mem6502 + %arg ] , cl
+
+STY ABSX:
+mov byte [ rbx + mem6502 + %arg ] , cl
+
+STY ABSY:
+mov byte [ rcx + mem6502 + %arg ] , cl
+
+STY ZP:
+mov byte[ mem6502 + %arg ] , cl
+
+STY IX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+movzx edx , word [ mem6502 + rdx ]
+mov byte [ mem6502 + rdx ] , cl
+
+STY IY:
+movzx edx , word [ mem6502 + %arg ]
+mov byte [ mem6502 + rcx + rdx ] , cl
+
+STY ZPX:
+lea edx , [ rbx + %arg ]
+movzx edx , dl
+mov byte [ mem6502 + rdx ] , cl
+
+TAX IMP:
+mov bl , al
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+TAY IMP:
+mov cl , al
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test al , al
+pushfq
+or [rsp], edx
+popfq
+
+TSX IMP:
+mov bl , dil
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test dil , dil
+pushfq
+or [rsp], edx
+popfq
+
+TXA IMP:
+mov al , bl
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test bl , bl
+pushfq
+or [rsp], edx
+popfq
+
+TYA IMP:
+mov al , cl
+pushfq
+pop rdx
+and edx , MASK_CF_FLAG|MASK_OF_FLAG
+test cl , cl
+pushfq
+or [rsp], edx
+popfq
+
+TXS IMP:
+mov dil , bl

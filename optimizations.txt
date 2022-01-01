@@ -1,0 +1,169 @@
+#Peephole optimizations for 6502 assembly
+#========================================
+
+#[x] LDA/STA pairs
+#[x] pair of LDA/STA pairs to 16 bit
+#[x] 16 bit add
+#[ ] 16 bit sub
+#[ ] 16 bit add with 8 bit
+#[ ] 16 bit sub with 8 bit
+#[x] CLC/ADC to ADD
+#[ ] Bxx/JMP trampoline
+
+#[ ] review firmware for ideas
+
+EXCLUDE 0xFFE7 TO 0xFFFF
+
+#(list first so doesn't become two 8-bit loads)
+NAME 
+    LDx/STx for 16-bit constants
+SET
+    DEF LD LDA LDX LDY
+    DEF ST STA STX STY
+    DEF REG A X Y
+SYMBOL
+    S1 %A3 8 << %A1 +
+REQUIRE
+    %A2 1 + %A4 =
+PATTERN
+    1 %LD IMMED
+    2 %ST ABS ZP
+    3 %LD IMMED
+    4 %ST ABS ZP
+POST
+    LOAD %REG
+REPLACE
+    MOV16 ABS %A2 , IMMED %S1 
+END
+
+NAME 
+    LDx/STx for 8-bit constants
+SET
+    DEF LD LDA LDX LDY
+    DEF ST STA STX STY
+    DEF REG A X Y
+PATTERN
+    1 %LD IMMED
+    2 %ST ABS ZP
+POST
+    LOAD %REG
+REPLACE
+    MOV8 ABS %A2 , IMMED %A1
+END
+
+NAME 
+    CLC/ADC pair to ADD
+PATTERN
+      CLC
+    1 ADC ANY
+REPLACE
+    ADD8 %M1 %A1
+END
+
+NAME 
+    CLC/ADC pair to ADD
+PATTERN
+      CLC
+      LOAD A
+    1 ADC ANY
+REPLACE
+    ADD8 %M1 %A1
+END
+
+NAME 
+    SEC/SBC pair to SUB
+PATTERN
+      SEC
+    1 SBC ANY
+REPLACE
+    SUB8 %M1 %A1
+END
+
+NAME 
+    SEC/SBC pair to SUB
+PATTERN
+      SEC
+      LOAD A
+    1 SBC ANY
+REPLACE
+    SUB8 %M1 %A1
+END
+
+NAME 
+    16-bit add without immediates
+SYMBOL
+    P1_DS %A2 %A4 =
+    P1_SD %A3 %A4 =
+    P2_DS %A5 %A7 =
+    P2_SD %A6 %A7 =
+    P_DSDS %P1_DS %P2_DS AND
+    P_DSSD %P1_DS %P2_SD AND
+    P_SDDS %P1_SD %P2_DS AND
+    P_SDSD %P1_SD %P2_SD AND
+    SRC_LO %A3 %A2 %P1_DS IFF
+    SRC_HI %A6 %A5 %P2_DS IFF
+REQUIRE
+    %A4 1 + %A7 =
+    %P_DSDS %P_DSSD %P_SDDS %P_SDSD OR OR OR
+    %SRC_LO 1 + %SRC_HI =
+PATTERN
+    1 CLC
+    2 LDA ABS ZP 
+    3 ADC ABS ZP
+    4 STA ABS ZP 
+    5 LDA ABS ZP
+    6 ADC ABS ZP
+    7 STA ABS ZP
+PATTERN
+    2 LDA ABS ZP
+    1 CLC
+    3 ADC ABS ZP
+    4 STA ABS ZP 
+    5 LDA ABS ZP
+    6 ADC ABS ZP
+    7 STA ABS ZP
+REPLACE
+    ADD16 ABS %A4 , ABS %SRC_LO
+END
+
+NAME 
+    16-bit add with immediates
+SYMBOL
+    M2_I %M2 IMMED =
+    M3_I %M3 IMMED =
+    M5_I %M5 IMMED =
+    M6_I %M6 IMMED =
+    #KEEP THIS FOR EXAMPLE!
+    #IMMED_VAL %M5_I %A5 * %M6_I %A6 * + 8 << %M2_I %A2 * %M3_I %A3 * + +
+    #SRC1 %M2_I %A3 * %M3_I %A2 * +
+    #SRC2 %M5_I %A6 * %M6_I %A5 * +  
+    IMMED_VAL %A5 %A6 %M5_I IFF 8 << %A2 %A3 %M2_I IFF +
+    SRC1 %A3 %A2 %M2_I IFF
+    SRC2 %A6 %A5 %M6_I IFF
+REQUIRE
+    %M2_I %M3_I + 1 =
+    %M5_I %M6_I + 1 =
+    %SRC1 1 + %SRC2 =
+    %SRC1 %A4 =
+    %SRC2 %A7 =
+PATTERN
+    1 CLC
+    2 LDA ABS ZP IMMED
+    3 ADC ABS ZP IMMED
+    4 STA ABS ZP 
+    5 LDA ABS ZP IMMED
+    6 ADC ABS ZP IMMED
+    7 STA ABS ZP
+PATTERN
+    2 LDA ABS ZP IMMED
+    1 CLC
+    3 ADC ABS ZP IMMED
+    4 STA ABS ZP 
+    5 LDA ABS ZP IMMED
+    6 ADC ABS ZP IMMED
+    7 STA ABS ZP
+REPLACE
+    ADD16 ABS %SRC1 , IMMED %IMMED_VAL
+END
+
+

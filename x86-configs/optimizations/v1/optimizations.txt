@@ -1,0 +1,27 @@
+#Peephole optimizations for 6502 assembly
+#========================================
+
+#LDA/STA pairs
+#pair of LDA/STA pairs to 16 bit
+#even 32 bit if 4 bytes in a row
+#load constant into %temp for writing?
+#16 bit add/sub
+#add and write to mem without LDA/ADC/STA?
+#CLC/ADC to ADD
+#Bxx/JMP trampoline
+
+SET IGNORE_A CLC CLD CLI CLV CPX CPY DEX DEY INX INY LDX LDY SEC SED SEI STX STY
+SET LOAD_A   LDA TYA TXA PLA 
+
+PATTERN
+    LDA IMMED X1
+    IGNORE_A ANYCOUNT X2
+    STA ABS ZP X3
+    IGNORE_A ANYCOUNT X4
+    LOAD_A X5
+REPLACE
+    MOV_I8 X3 X1
+    X2
+    X4
+    X5
+END

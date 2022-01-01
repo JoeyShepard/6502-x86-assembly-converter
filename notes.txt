@@ -1,0 +1,8 @@
+Fuz's ideas:
+-two versions of source. switch to other when D flag set
+-1:1 correspondence so 8 or 16 bytes per 6502 instruction
+-64k LUT for decimal is whole cache - bad
+-LUT for jump addresses is better than binary search
+
+My idea:
+-recode decimal ADC

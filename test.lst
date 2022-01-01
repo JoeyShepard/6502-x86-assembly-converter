@@ -1,0 +1,736 @@
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 1 - 12/15/2021 16:55:30
+
+
+       1/       0 : =$FFE7               DEBUG       = $FFE7
+       2/       0 : =$FFE8               DEBUG_HEX   = $FFE8
+       3/       0 : =$FFF0               FILE_INPUT  = $FFF0
+       4/       0 : =$FFF1               PROG_EXIT   = $FFF1
+       5/       0 :                     
+       6/    FFFC :                         ORG $FFFC 
+       7/    FFFC : 00 C0                       FDB $C000
+       8/    FFFE :                     
+       9/    C000 :                         ORG $C000
+      10/    C000 :                         main:
+      11/    C000 :                             ;Test data used below
+      12/    C000 :                             ;(was part of x86 template but need here to for node.js version to match)
+      13/    C000 : A9 57                       LDA #$57
+      14/    C002 : 8D 45 23                    STA $2345
+      15/    C005 : A9 63                       LDA #$63
+      16/    C007 : 8D 46 23                    STA $2346
+      17/    C00A : A9 45                       LDA #$45
+      18/    C00C : 85 09                       STA 9
+      19/    C00E : A9 23                       LDA #$23
+      20/    C010 : 85 0A                       STA 10
+      21/    C012 :                     
+      22/    C012 :                         tests:
+      23/    C012 :                             
+      24/    C012 :                             ;Optimization - MOV8      
+      25/    C012 :                             ;===================
+      26/    C012 :                             ;Optimize to mov [0x30], 5
+      27/    C012 : A9 05                       LDA #5
+      28/    C014 : 85 30                       STA $30
+      29/    C016 : 8A                          TXA
+      30/    C017 :                             
+      31/    C017 :                             ;Optimize to mov [0x31], 6
+      32/    C017 : A2 06                       LDX #6
+      33/    C019 : 86 31                       STX $31
+      34/    C01B : AA                          TAX
+      35/    C01C :                             
+      36/    C01C :                             ;Do not optimize
+      37/    C01C : A9 07                       LDA #7
+      38/    C01E : 85 32                       STA $32
+      39/    C020 : 69 05                       ADC #5
+      40/    C022 :                     
+      41/    C022 :                     
+      42/    C022 : E8                          .lbl_test: INX
+      43/    C023 :                     
+      44/    C023 : F8                          SED 
+      45/    C024 : 18                          CLC
+      46/    C025 : A9 99                       LDA #$99
+      47/    C027 : 69 99                       ADC #$99
+      48/    C029 : 18                          CLC
+      49/    C02A : A9 87                       LDA #$87
+      50/    C02C : 69 09                       ADC #$9
+      51/    C02E : 18                          CLC
+      52/    C02F : A9 87                       LDA #$87
+      53/    C031 : 69 20                       ADC #$20
+      54/    C033 : 18                          CLC
+      55/    C034 : A9 87                       LDA #$87
+      56/    C036 : 69 29                       ADC #$29
+      57/    C038 :                     
+      58/    C038 :                             ;JMP .skip_bcd_add
+      59/    C038 :                     
+      60/    C038 :                             ;Decimal addition tests
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 2 - 12/15/2021 16:55:30
+
+
+      61/    C038 : F8                          SED
+      62/    C039 : A9 00                       LDA #0
+      63/    C03B : 85 0A                       STA 10
+      64/    C03D : 85 0B                       STA 11
+      65/    C03F : 85 0C                       STA 12
+      66/    C041 : 85 0D                       STA 13
+      67/    C043 :                             .bcd_add_1:
+      68/    C043 : A5 0A                           LDA 10
+      69/    C045 : 05 0B                           ORA 11
+      70/    C047 : 85 09                           STA 9
+      71/    C049 :                                 ;STA DEBUG_HEX
+      72/    C049 : A5 0C                           LDA 12
+      73/    C04B : 05 0D                           ORA 13
+      74/    C04D :                                 ;STA DEBUG_HEX
+      75/    C04D :                                 ;CLC ;passed!
+      76/    C04D : 38                              SEC ;passed!
+      77/    C04E : 65 09                           ADC 9
+      78/    C050 :                                 ;LDA #' '
+      79/    C050 :                                 ;STA DEBUG
+      80/    C050 :                                 
+      81/    C050 : E6 0A                           INC 10
+      82/    C052 : A5 0A                           LDA 10
+      83/    C054 : C9 0A                           CMP #$A
+      84/    C056 : 90 EB                           BCC .bcd_add_1
+      85/    C058 : A9 00                           LDA #0
+      86/    C05A : 85 0A                           STA 10
+      87/    C05C :                                
+      88/    C05C :                                 ;LDA #92
+      89/    C05C :                                 ;STA DEBUG
+      90/    C05C :                                 ;LDA #'n'
+      91/    C05C :                                 ;STA DEBUG
+      92/    C05C :                     
+      93/    C05C : 18                              CLC
+      94/    C05D : A5 0B                           LDA 11
+      95/    C05F : 69 10                           ADC #$10
+      96/    C061 : 85 0B                           STA 11
+      97/    C063 : D0 DE                           BNE .bcd_add_1
+      98/    C065 :                                 
+      99/    C065 : E6 0C                           INC 12
+     100/    C067 : A5 0C                           LDA 12
+     101/    C069 : C9 0A                           CMP #$A
+     102/    C06B : 90 D6                           BCC .bcd_add_1
+     103/    C06D : A9 00                           LDA #0
+     104/    C06F : 85 0C                           STA 12
+     105/    C071 :                                 
+     106/    C071 : 18                              CLC
+     107/    C072 : A5 0D                           LDA 13
+     108/    C074 : 69 10                           ADC #$10
+     109/    C076 : 85 0D                           STA 13
+     110/    C078 : D0 C9                           BNE .bcd_add_1
+     111/    C07A :                             
+     112/    C07A :                             .skip_bcd_add:
+     113/    C07A :                     
+     114/    C07A :                             ;JMP .skip_bcd_sub
+     115/    C07A :                     
+     116/    C07A :                             ;Decimal subtraction tests
+     117/    C07A : F8                          SED
+     118/    C07B : A9 00                       LDA #0
+     119/    C07D : 85 0A                       STA 10
+     120/    C07F : 85 0B                       STA 11
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 3 - 12/15/2021 16:55:30
+
+
+     121/    C081 : 85 0C                       STA 12
+     122/    C083 : 85 0D                       STA 13
+     123/    C085 :                             .bcd_sub_1:
+     124/    C085 : A5 0A                           LDA 10
+     125/    C087 : 05 0B                           ORA 11
+     126/    C089 : 85 09                           STA 9
+     127/    C08B :                                 ;STA DEBUG_HEX
+     128/    C08B : A5 0C                           LDA 12
+     129/    C08D : 05 0D                           ORA 13
+     130/    C08F :                                 ;STA DEBUG_HEX
+     131/    C08F : 38                              SEC
+     132/    C090 : E5 09                           SBC 9
+     133/    C092 :                                 ;LDA #' '
+     134/    C092 :                                 ;STA DEBUG
+     135/    C092 :                                 
+     136/    C092 : E6 0A                           INC 10
+     137/    C094 : A5 0A                           LDA 10
+     138/    C096 : C9 0A                           CMP #$A
+     139/    C098 : 90 EB                           BCC .bcd_sub_1
+     140/    C09A : A9 00                           LDA #0
+     141/    C09C : 85 0A                           STA 10
+     142/    C09E :                                
+     143/    C09E :                                 ;LDA #92
+     144/    C09E :                                 ;STA DEBUG
+     145/    C09E :                                 ;LDA #'n'
+     146/    C09E :                                 ;STA DEBUG
+     147/    C09E :                     
+     148/    C09E : 18                              CLC
+     149/    C09F : A5 0B                           LDA 11
+     150/    C0A1 : 69 10                           ADC #$10
+     151/    C0A3 : 85 0B                           STA 11
+     152/    C0A5 : D0 DE                           BNE .bcd_sub_1
+     153/    C0A7 :                                 
+     154/    C0A7 : E6 0C                           INC 12
+     155/    C0A9 : A5 0C                           LDA 12
+     156/    C0AB : C9 0A                           CMP #$A
+     157/    C0AD : 90 D6                           BCC .bcd_sub_1
+     158/    C0AF : A9 00                           LDA #0
+     159/    C0B1 : 85 0C                           STA 12
+     160/    C0B3 :                                 
+     161/    C0B3 : 18                              CLC
+     162/    C0B4 : A5 0D                           LDA 13
+     163/    C0B6 : 69 10                           ADC #$10
+     164/    C0B8 : 85 0D                           STA 13
+     165/    C0BA : D0 C9                           BNE .bcd_sub_1
+     166/    C0BC :                     
+     167/    C0BC :                             .skip_bcd_sub:
+     168/    C0BC :                     
+     169/    C0BC : D8                          CLD
+     170/    C0BD :                     
+     171/    C0BD : 4C D6 C0                    JMP .skip
+     172/    C0C0 :                             .string1:
+     173/    C0C0 : 54 65 73 74 31 5C           FCB "Test1\\nTest2\\nTest3\\n",0
+             C0C6 : 6E 54 65 73 74 32 
+             C0CC : 5C 6E 54 65 73 74 
+             C0D2 : 33 5C 6E 00       
+     174/    C0D6 :                             .skip:
+     175/    C0D6 : A0 00                       LDY #0
+     176/    C0D8 :                             .l3:
+     177/    C0D8 : B9 C0 C0                    LDA .string1,Y
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 4 - 12/15/2021 16:55:30
+
+
+     178/    C0DB : F0 07                       BEQ .done
+     179/    C0DD : 8D E7 FF                    STA DEBUG
+     180/    C0E0 : C8                          INY
+     181/    C0E1 : 4C D8 C0                    JMP .l3
+     182/    C0E4 :                             .done:
+     183/    C0E4 :                             ;BRK
+     184/    C0E4 :                     
+     185/    C0E4 : A9 41                       LDA #'A'
+     186/    C0E6 : 8D E7 FF                    STA DEBUG
+     187/    C0E9 : 8D E8 FF                    STA DEBUG_HEX
+     188/    C0EC : 8D 45 23                    STA $2345
+     189/    C0EF :                             ;LDA FILE_INPUT
+     190/    C0EF : AD 00 C0                    LDA $C000
+     191/    C0F2 :                             
+     192/    C0F2 :                             .l2:
+     193/    C0F2 : AD F0 FF                    LDA FILE_INPUT
+     194/    C0F5 : 8D E7 FF                    STA DEBUG
+     195/    C0F8 : D0 F8                       BNE .l2
+     196/    C0FA :                             ;STA PROG_EXIT
+     197/    C0FA :                     
+     198/    C0FA :                             ;LDA #'H'
+     199/    C0FA :                             ;STA DEBUG
+     200/    C0FA :                             ;LDA #'\\'
+     201/    C0FA :                             ;STA DEBUG
+     202/    C0FA :                             ;LDA #'n'
+     203/    C0FA :                             ;STA DEBUG
+     204/    C0FA :                             ;LDA #'i'
+     205/    C0FA :                             ;STA DEBUG
+     206/    C0FA :                             ;STA PROG_EXIT
+     207/    C0FA :                            
+     208/    C0FA : A9 5C                       LDA #'\\'
+     209/    C0FC : 8D E7 FF                    STA DEBUG
+     210/    C0FF : A9 6E                       LDA #'n'
+     211/    C101 : 8D E7 FF                    STA DEBUG
+     212/    C104 :                             
+     213/    C104 : A2 0F                       LDX #15
+     214/    C106 : A9 01                       LDA #1
+     215/    C108 :                             .loop:
+     216/    C108 : 8D E8 FF                        STA DEBUG_HEX
+     217/    C10B : 18                              CLC
+     218/    C10C : 69 11                           ADC #$11
+     219/    C10E : A8                              TAY
+     220/    C10F : A9 20                           LDA #' '
+     221/    C111 : 8D E7 FF                        STA DEBUG
+     222/    C114 : 98                              TYA
+     223/    C115 : CA                              DEX
+     224/    C116 : D0 F0                           BNE .loop
+     225/    C118 :                             ;STA PROG_EXIT
+     226/    C118 :                     
+     227/    C118 : A9 48                       LDA #'H'
+     228/    C11A : 8D E7 FF                    STA DEBUG
+     229/    C11D : A9 69                       LDA #'i'
+     230/    C11F : 8D E7 FF                    STA DEBUG
+     231/    C122 :                             
+     232/    C122 :                             ;STA PROG_EXIT
+     233/    C122 :                     
+     234/    C122 : 38                          SEC
+     235/    C123 : A9 05                       LDA #5
+     236/    C125 : E9 03                       SBC #3
+     237/    C127 :                     
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 5 - 12/15/2021 16:55:30
+
+
+     238/    C127 : F8                          SED
+     239/    C128 : 38                          SEC
+     240/    C129 : A9 12                       LDA #$12
+     241/    C12B : E9 03                       SBC #3
+     242/    C12D :                             
+     243/    C12D : 18                          CLC
+     244/    C12E : A9 12                       LDA #$12
+     245/    C130 : E9 03                       SBC #3
+     246/    C132 :                             
+     247/    C132 : 38                          SEC
+     248/    C133 : A9 21                       LDA #$21
+     249/    C135 : E9 32                       SBC #$32
+     250/    C137 :                     
+     251/    C137 : 38                          SEC
+     252/    C138 : A9 05                       LDA #5
+     253/    C13A : E9 05                       SBC #5
+     254/    C13C :                             
+     255/    C13C : D8                          CLD
+     256/    C13D :                     
+     257/    C13D : 18                          CLC
+     258/    C13E : A9 7F                       LDA #$7F
+     259/    C140 : 69 80                       ADC #$80
+     260/    C142 :                     
+     261/    C142 : F8                          SED
+     262/    C143 : 18                          CLC
+     263/    C144 : A9 09                       LDA #9
+     264/    C146 : 69 01                       ADC #1
+     265/    C148 :                             
+     266/    C148 : 38                          SEC
+     267/    C149 : A9 46                       LDA #$46
+     268/    C14B : 69 47                       ADC #$47
+     269/    C14D :                     
+     270/    C14D : 38                          SEC
+     271/    C14E : A9 44                       LDA #$44
+     272/    C150 : 69 55                       ADC #$55
+     273/    C152 :                     
+     274/    C152 : 18                          CLC
+     275/    C153 : A9 98                       LDA #$98
+     276/    C155 : 69 67                       ADC #$67
+     277/    C157 :                     
+     278/    C157 : D8                          CLD
+     279/    C158 : 38                          SEC
+     280/    C159 : A9 55                       LDA #$55
+     281/    C15B : 69 55                       ADC #$55
+     282/    C15D :                     
+     283/    C15D : 38                          SEC
+     284/    C15E :                     
+     285/    C15E :                             ;N flag
+     286/    C15E : A9 80                       LDA #$80
+     287/    C160 : 85 64                       STA 100
+     288/    C162 : 24 64                       BIT 100
+     289/    C164 :                     
+     290/    C164 :                             ;Z and N flag
+     291/    C164 : A9 AA                       LDA #$AA
+     292/    C166 : 85 64                       STA 100
+     293/    C168 : A9 55                       LDA #$55
+     294/    C16A : 24 64                       BIT 100
+     295/    C16C :                     
+     296/    C16C :                             ;O flag
+     297/    C16C : A9 40                       LDA #$40
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 6 - 12/15/2021 16:55:30
+
+
+     298/    C16E : 85 64                       STA 100
+     299/    C170 : 24 64                       BIT 100
+     300/    C172 :                     
+     301/    C172 :                             ;N and O flag
+     302/    C172 : A9 C0                       LDA #$C0
+     303/    C174 : 85 64                       STA 100
+     304/    C176 : A9 40                       LDA #$40
+     305/    C178 : 24 64                       BIT 100
+     306/    C17A :                     
+     307/    C17A : 18                          CLC
+     308/    C17B : A9 FF                       LDA #$FF
+     309/    C17D : 08                          PHP
+     310/    C17E :                     
+     311/    C17E : 38                          SEC
+     312/    C17F : A9 00                       LDA #0
+     313/    C181 : 28                          PLP
+     314/    C182 :                     
+     315/    C182 : A2 FF                       LDX #$FF
+     316/    C184 : 9A                          TXS
+     317/    C185 : 20 3F C3                    JSR jsr_test
+     318/    C188 : A2 00                       LDX #0
+     319/    C18A : 9A                          TXS
+     320/    C18B : 20 3F C3                    JSR jsr_test
+     321/    C18E :                     
+     322/    C18E : A9 00                       LDA #0
+     323/    C190 : 85 14                       STA 20
+     324/    C192 : A9 02                       LDA #2
+     325/    C194 : 85 15                       STA 21
+     326/    C196 : 6C 14 00                    JMP (20)
+     327/    C199 :                             ijmp_ret:
+     328/    C199 :                     
+     329/    C199 : 38                          SEC
+     330/    C19A : A9 03                       LDA #3
+     331/    C19C : 85 14                       STA 20
+     332/    C19E : 8D 00 40                    STA $4000
+     333/    C1A1 : 6E 00 40                    ROR $4000
+     334/    C1A4 : AD 00 40                    LDA $4000
+     335/    C1A7 : A2 01                       LDX #1
+     336/    C1A9 : 7E FF 3F                    ROR $3FFF,X
+     337/    C1AC : AD 00 40                    LDA $4000
+     338/    C1AF : 38                          SEC
+     339/    C1B0 : 76 13                       ROR 19,X
+     340/    C1B2 : A5 14                       LDA 20
+     341/    C1B4 : 76 13                       ROR 19,X
+     342/    C1B6 : A5 14                       LDA 20 
+     343/    C1B8 :                             
+     344/    C1B8 : 18                          CLC
+     345/    C1B9 : A2 15                       LDX #21
+     346/    C1BB : A9 03                       LDA #3
+     347/    C1BD : 85 14                       STA 20
+     348/    C1BF : 76 FF                       ROR 255,X
+     349/    C1C1 : 76 FF                       ROR 255,X
+     350/    C1C3 : 76 FF                       ROR 255,X
+     351/    C1C5 :                         
+     352/    C1C5 : 38                          SEC
+     353/    C1C6 : A9 03                       LDA #3
+     354/    C1C8 : 6A                          ROR
+     355/    C1C9 : 6A                          ROR
+     356/    C1CA : 6A                          ROR
+     357/    C1CB : 6A                          ROR
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 7 - 12/15/2021 16:55:30
+
+
+     358/    C1CC :                     
+     359/    C1CC : 38                          SEC 
+     360/    C1CD : A9 C0                       LDA #$C0
+     361/    C1CF : 2A                          ROL
+     362/    C1D0 : 2A                          ROL
+     363/    C1D1 : 2A                          ROL
+     364/    C1D2 :                     
+     365/    C1D2 : 38                          SEC
+     366/    C1D3 : A9 80                       LDA #$80
+     367/    C1D5 : 4A                          LSR
+     368/    C1D6 : 18                          CLC
+     369/    C1D7 : A9 03                       LDA #3
+     370/    C1D9 : 4A                          LSR
+     371/    C1DA : 4A                          LSR
+     372/    C1DB : 4A                          LSR
+     373/    C1DC :                     
+     374/    C1DC : A9 03                       LDA #3
+     375/    C1DE : 85 15                       STA 21
+     376/    C1E0 : 46 15                       LSR 21
+     377/    C1E2 : 46 15                       LSR 21
+     378/    C1E4 : A5 15                       LDA 21
+     379/    C1E6 :                     
+     380/    C1E6 : A9 03                       LDA #3
+     381/    C1E8 : 85 15                       STA 21
+     382/    C1EA : A2 05                       LDX #5
+     383/    C1EC : 46 15                       LSR 21
+     384/    C1EE : 56 10                       LSR 16,X
+     385/    C1F0 : A5 15                       LDA 21
+     386/    C1F2 :                     
+     387/    C1F2 :                     
+     388/    C1F2 : 18                          CLC
+     389/    C1F3 : A9 C0                       LDA #$C0
+     390/    C1F5 : 0A                          ASL
+     391/    C1F6 : 0A                          ASL
+     392/    C1F7 : 0A                          ASL
+     393/    C1F8 :                     
+     394/    C1F8 : A9 C0                       LDA #$C0
+     395/    C1FA : 85 14                       STA 20
+     396/    C1FC : 06 14                       ASL 20
+     397/    C1FE : A5 14                       LDA 20
+     398/    C200 : A2 05                       LDX #5
+     399/    C202 : 16 0F                       ASL 15,X
+     400/    C204 : A5 14                       LDA 20
+     401/    C206 :                             
+     402/    C206 :                             ;JMP c_test_1
+     403/    C206 :                     
+     404/    C206 : A2 00                       LDX #0
+     405/    C208 : 4C 0C C2                    JMP test_jmp
+     406/    C20B : E8                          INX
+     407/    C20C :                             test_jmp:
+     408/    C20C :                     
+     409/    C20C : A2 00                       LDX #0
+     410/    C20E : B8                          CLV
+     411/    C20F : 50 01                       BVC test7
+     412/    C211 : E8                          INX
+     413/    C212 :                             test7:
+     414/    C212 : 18                          CLC
+     415/    C213 : A9 05                       LDA #5
+     416/    C215 : E9 80                       SBC #$80
+     417/    C217 : 70 01                       BVS test8
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 8 - 12/15/2021 16:55:30
+
+
+     418/    C219 : E8                          INX
+     419/    C21A :                             test8:
+     420/    C21A :                     
+     421/    C21A :                     
+     422/    C21A : A2 00                       LDX #0
+     423/    C21C : A9 00                       LDA #0
+     424/    C21E : F0 01                       BEQ test5
+     425/    C220 : E8                          INX
+     426/    C221 :                             test5:
+     427/    C221 : A9 01                       LDA #1
+     428/    C223 : D0 01                       BNE test6
+     429/    C225 : E8                          INX
+     430/    C226 :                             test6:
+     431/    C226 :                     
+     432/    C226 : A2 00                       LDX #0
+     433/    C228 : A9 80                       LDA #$80
+     434/    C22A : 30 01                       BMI test3
+     435/    C22C : E8                          INX
+     436/    C22D :                             test3:
+     437/    C22D : A9 00                       LDA #0
+     438/    C22F : 10 01                       BPL test4
+     439/    C231 : E8                          INX
+     440/    C232 :                             test4:
+     441/    C232 :                     
+     442/    C232 : A2 00                       LDX #0
+     443/    C234 : 38                          SEC
+     444/    C235 : B0 01                       BCS test1
+     445/    C237 : E8                          INX
+     446/    C238 :                             test1:
+     447/    C238 : 18                          CLC
+     448/    C239 : 90 01                       BCC test2
+     449/    C23B : E8                          INX
+     450/    C23C :                             test2:
+     451/    C23C :                     
+     452/    C23C : A2 FF                       LDX #$FF
+     453/    C23E : 9A                          TXS
+     454/    C23F : A9 80                       LDA #$80
+     455/    C241 : 48                          PHA
+     456/    C242 : A9 00                       LDA #0
+     457/    C244 : AD FF 01                    LDA $1FF
+     458/    C247 : 38                          SEC
+     459/    C248 : BA                          TSX
+     460/    C249 : 68                          PLA
+     461/    C24A :                     
+     462/    C24A : A9 80                       LDA #$80
+     463/    C24C : A8                          TAY
+     464/    C24D : A9 00                       LDA #0
+     465/    C24F : 98                          TYA
+     466/    C250 :                     
+     467/    C250 : A2 09                       LDX #9
+     468/    C252 : 9A                          TXS
+     469/    C253 : A2 00                       LDX #0
+     470/    C255 : BA                          TSX
+     471/    C256 :                     
+     472/    C256 : A9 05                       LDA #5
+     473/    C258 : AA                          TAX
+     474/    C259 : A9 07                       LDA #7
+     475/    C25B : A8                          TAY
+     476/    C25C : 8A                          TXA
+     477/    C25D : 98                          TYA
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 9 - 12/15/2021 16:55:30
+
+
+     478/    C25E :                     
+     479/    C25E : A9 05                       LDA #5
+     480/    C260 : E9 80                       SBC #$80
+     481/    C262 : 38                          SEC
+     482/    C263 : B8                          CLV
+     483/    C264 :                     
+     484/    C264 : 18                          CLC
+     485/    C265 : A9 20                       LDA #$20
+     486/    C267 : 8D 00 20                    STA $2000
+     487/    C26A : 69 01                       ADC #1
+     488/    C26C : A2 02                       LDX #2
+     489/    C26E : 9D FF 1F                    STA $1FFF,X
+     490/    C271 : 69 01                       ADC #1
+     491/    C273 : A0 04                       LDY #4
+     492/    C275 : 99 FE 1F                    STA $1FFE,Y
+     493/    C278 : AD 00 20                    LDA $2000
+     494/    C27B : AD 01 20                    LDA $2001
+     495/    C27E : AD 02 20                    LDA $2002
+     496/    C281 :                     
+     497/    C281 : A9 07                       LDA #7
+     498/    C283 :                             ;BRK
+     499/    C283 :                             
+     500/    C283 :                             c_test_1: 
+     501/    C283 :                     
+     502/    C283 : 18                          CLC 
+     503/    C284 : AD 45 23                    LDA $2345
+     504/    C287 : EE 45 23                    INC $2345
+     505/    C28A : AD 45 23                    LDA $2345
+     506/    C28D : A2 04                       LDX #4
+     507/    C28F : FE 41 23                    INC $2341,X
+     508/    C292 : AD 45 23                    LDA $2345
+     509/    C295 :                             
+     510/    C295 : A2 03                       LDX #3
+     511/    C297 : DE 42 23                    DEC $2342,X
+     512/    C29A : DE 42 23                    DEC $2342,X
+     513/    C29D : AD 45 23                    LDA $2345
+     514/    C2A0 :                     
+     515/    C2A0 : A2 FE                       LDX #254
+     516/    C2A2 : E8                          INX
+     517/    C2A3 : E8                          INX
+     518/    C2A4 : E8                          INX
+     519/    C2A5 : CA                          DEX
+     520/    C2A6 : CA                          DEX
+     521/    C2A7 :                             
+     522/    C2A7 : A9 05                       LDA #5
+     523/    C2A9 : C9 07                       CMP #7
+     524/    C2AB : C9 03                       CMP #3
+     525/    C2AD :                             
+     526/    C2AD : A2 05                       LDX #5
+     527/    C2AF : E0 07                       CPX #7
+     528/    C2B1 : E0 03                       CPX #3
+     529/    C2B3 :                     
+     530/    C2B3 : A0 05                       LDY #5
+     531/    C2B5 : C0 07                       CPY #7
+     532/    C2B7 : C0 03                       CPY #3
+     533/    C2B9 :                     
+     534/    C2B9 : A9 05                       LDA #5
+     535/    C2BB : C9 80                       CMP #$80
+     536/    C2BD :                     
+     537/    C2BD :                             ;JMP *
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 10 - 12/15/2021 16:55:30
+
+
+     538/    C2BD :                     
+     539/    C2BD : 38                          SEC
+     540/    C2BE : A9 A5                       LDA #$A5
+     541/    C2C0 : 09 55                       ORA #$55
+     542/    C2C2 :                     
+     543/    C2C2 : A9 A5                       LDA #$A5
+     544/    C2C4 : 49 55                       EOR #$55
+     545/    C2C6 :                     
+     546/    C2C6 : 38                          SEC
+     547/    C2C7 : A9 A5                       LDA #$A5
+     548/    C2C9 : 29 55                       AND #$55
+     549/    C2CB :                     
+     550/    C2CB : A9 FF                       LDA #$FF
+     551/    C2CD : 29 7F                       AND #$7F
+     552/    C2CF :                     
+     553/    C2CF : A9 FF                       LDA #$FF
+     554/    C2D1 : 29 80                       AND #$80
+     555/    C2D3 :                     
+     556/    C2D3 : 18                          CLC
+     557/    C2D4 : A9 FF                       LDA #$FF
+     558/    C2D6 : 29 7F                       AND #$7F
+     559/    C2D8 :                             
+     560/    C2D8 :                             ;BRK
+     561/    C2D8 :                     
+     562/    C2D8 : AD 45 23                    LDA $2345
+     563/    C2DB : AD 46 23                    LDA $2346
+     564/    C2DE : A5 09                       LDA 9
+     565/    C2E0 : A5 0A                       LDA 10
+     566/    C2E2 :                     
+     567/    C2E2 :                     
+     568/    C2E2 : A9 EE                       LDA #$EE
+     569/    C2E4 : A0 00                       LDY #0
+     570/    C2E6 : 31 09                       AND (9),Y
+     571/    C2E8 :                     
+     572/    C2E8 : 18                          CLC
+     573/    C2E9 : A9 07                       LDA #7
+     574/    C2EB : A0 01                       LDY #1
+     575/    C2ED : 71 09                       ADC (9),Y
+     576/    C2EF :                             
+     577/    C2EF : 65 09                       ADC 9
+     578/    C2F1 : 6D 45 23                    ADC $2345
+     579/    C2F4 :                     
+     580/    C2F4 : A9 09                       LDA #9
+     581/    C2F6 : A2 06                       LDX #6 
+     582/    C2F8 : 61 03                       ADC (3,X) 
+     583/    C2FA :                             
+     584/    C2FA : A0 00                       LDY #0
+     585/    C2FC : B1 09                       LDA (9),Y
+     586/    C2FE :                     
+     587/    C2FE : A0 01                       LDY #1
+     588/    C300 : B1 09                       LDA (9),Y
+     589/    C302 :                     
+     590/    C302 : A2 06                       LDX #6
+     591/    C304 : A1 03                       LDA (3,X)
+     592/    C306 :                             
+     593/    C306 : A2 FF                       LDX #255
+     594/    C308 : A1 0A                       LDA (10,X)
+     595/    C30A :                     
+     596/    C30A : 38                          SEC
+     597/    C30B : 18                          CLC
+ AS V1.42 Beta [Bld 207] - Source File test.asm - Page 11 - 12/15/2021 16:55:30
+
+
+     598/    C30C : 38                          SEC
+     599/    C30D :                     
+     600/    C30D : A9 05                       LDA #5
+     601/    C30F : 18                          CLC
+     602/    C310 : 69 07                       ADC #7
+     603/    C312 :                             
+     604/    C312 : A9 FF                       LDA #$FF
+     605/    C314 : 69 01                       ADC #1
+     606/    C316 :                     
+     607/    C316 : A9 FF                       LDA #$FF
+     608/    C318 : 69 FF                       ADC #$FF
+     609/    C31A :                     
+     610/    C31A :                     
+     611/    C31A : A9 05                       LDA #5
+     612/    C31C : A9 7F                       LDA #$7F
+     613/    C31E : A9 80                       LDA #$80
+     614/    C320 : A9 00                       LDA #$0
+     615/    C322 :                     
+     616/    C322 : A5 23                       LDA $23
+     617/    C324 : AD 56 34                    LDA $3456
+     618/    C327 :                             
+     619/    C327 : B5 23                       LDA $23,X
+     620/    C329 : BD 56 34                    LDA $3456,X
+     621/    C32C : B9 56 34                    LDA $3456,Y
+     622/    C32F :                     
+     623/    C32F : A2 00                       LDX #0
+     624/    C331 : A2 7F                       LDX #$7F
+     625/    C333 : A2 FF                       LDX #$FF
+     626/    C335 :                     
+     627/    C335 : A0 56                       LDY #$56
+     628/    C337 :                             
+     629/    C337 : 8D F1 FF                    STA PROG_EXIT
+     630/    C33A : 00                          BRK
+     631/    C33B : 00                          BRK
+     632/    C33C : 4C 00 C0                    JMP main
+     633/    C33F :                     
+     634/    C33F :                         jsr_test:
+     635/    C33F : A2 05                       LDX #5
+     636/    C341 : 60                          RTS
+     637/    C342 :                     
+     638/     200 :                         ORG $200
+     639/     200 : A2 77                       LDX #$77
+     640/     202 : 4C 99 C1                    JMP ijmp_ret
+     641/     205 :                     
+     642/     205 :                         code_end:
+     643/     205 :                     
+ AS V1.42 Beta [Bld 207] - Source File test.asm() - Page 12 - 12/15/2021 16:55:30
+
+
+  Symbol Table (* = unused):
+  --------------------------
+
+*ARCHITECTURE :                                        "i386-unknown-win32" - |
+*BIGENDIAN :                      0 - | *BRANCHEXT :                      0 - |
+*CASESENSITIVE :                  1 - | *COMPMODE :                       0 - |
+*CONSTPI :        3.141592653589793 - | *CUSTOM :                         0 - |
+*DATE :                "12/15/2021" - |  DEBUG :                       FFE7 - |
+ DEBUG_HEX :                   FFE8 - | *FALSE :                          0 - |
+ FILE_INPUT :                  FFF0 - | *FULLPMMU :                       1 - |
+*HAS64 :                          0 - | *HASDSP :                         0 - |
+*HASFPU :                         0 - | *HASPMMU :                        0 - |
+*INEXTMODE :                      0 - | *INLWORDMODE :                    0 - |
+*INMAXMODE :                      0 - | *INSRCMODE :                      0 - |
+*INSUPMODE :                      0 - | *LISTON :                         1 - |
+*MACEXP :                         7 - | *MOMCPU :                      6502 - |
+*MOMCPUNAME :                "6502" - | *NESTMAX :                      100 - |
+*PACKING :                        0 - | *PADDING :                        1 - |
+ PROG_EXIT :                   FFF1 - | *RELAXED :                        0 - |
+*TIME :                  "16:55:30" - | *TRUE :                           1 - |
+*VERSION :                     142F - | *Z80SYNTAX :                      0 - |
+*c_test_1 :                    C283 C | *code_end :                     205 C |
+ ijmp_ret :                    C199 C |  jsr_test :                    C33F C |
+ main :                        C000 C |  test1 :                       C238 C |
+ test2 :                       C23C C |  test3 :                       C22D C |
+ test4 :                       C232 C |  test5 :                       C221 C |
+ test6 :                       C226 C |  test7 :                       C212 C |
+ test8 :                       C21A C |  test_jmp :                    C20C C |
+*tests :                       C012 C |  tests.bcd_add_1 :             C043 C |
+ tests.bcd_sub_1 :             C085 C |  tests.done :                  C0E4 C |
+ tests.l2 :                    C0F2 C |  tests.l3 :                    C0D8 C |
+*tests.lbl_test :              C022 C |  tests.loop :                  C108 C |
+ tests.skip :                  C0D6 C | *tests.skip_bcd_add :          C07A C |
+*tests.skip_bcd_sub :          C0BC C |  tests.string1 :               C0C0 C |
+
+     61 symbols
+     37 unused symbols
+
+ AS V1.42 Beta [Bld 207] - Source File test.asm() - Page 13 - 12/15/2021 16:55:30
+
+
+  Code Pages:
+  ----------
+
+STANDARD (0 changed characters)
+
+1 code page
+
+0.01 seconds assembly time
+
+    643 lines source file
+      2 passes
+      0 errors
+      0 warnings

@@ -1,0 +1,17 @@
+v1-debug
+ - initial version with debug info
+
+v1
+ - initial version with debug info removed
+
+v2
+ - BCD replaced with instructions instead of LUT then went back to LUT
+
+v3
+ - Added flag optimization
+
+versions to be implemented:
+1. pushfq for flags, modify then restore
+2. 1 reg for each flag, 1 reg for 1, cmov
+3. branches - one for every flag combo
+4. best of all - save result and do NZ later
